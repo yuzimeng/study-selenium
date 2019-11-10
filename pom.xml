@@ -159,7 +159,8 @@
 			<artifactId>selenium-htmlunit-driver</artifactId>
 			<version>2.52.0</version>
 		</dependency>
-		<!-- selenium end --> -->
+		-->
+		<!-- selenium end -->
 	</dependencies>
 <!-- 构建管理 -->
 
