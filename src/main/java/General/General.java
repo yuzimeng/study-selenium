@@ -8,6 +8,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 enum LocatorType {
@@ -119,12 +120,45 @@ public class General {
 		}
 	}
 
-
+/**
+ * 
+ * @param driver
+ * @param seconds
+ * @param locator
+ */
 	public static void waitUntilvisiable(WebDriver driver,int seconds, By locator) {
 		
 		WebDriverWait wait =new WebDriverWait(driver,seconds);
+		wait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
 		
 	}
+
+	
+	public static void deleteFiles(File subFile) {
+		File[] fileList=subFile.listFiles();
+		
+		for(File f: fileList) {
+			if(f.isDirectory()) {
+				deleteFiles(f);
+			}else {
+				f.delete();
+			}
+		}
+		subFile.delete();
+		
+	}
+	
+	
+	
+public static void cleanFolder(String path) {
+	File file=new File(path);
+	if(file==null ||!file.exists()) {
+		file.mkdir();
+	}else {
+		deleteFiles(file);
+		file.mkdir();
+	}
+}
 
 
 

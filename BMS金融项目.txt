@@ -1,0 +1,9 @@
+1.junit 小于等于4.2 在必须定义为 TestRunnerFor***
+
+定位方法：
+1.如果定位某个元素，通过 js， action， click 都定位不到 可以考虑一下是不是屏幕分辨率的问题
+
+2.适用于chrome浏览器的插件：Katalon Recorder
+
+3.js定位方法：
+"arguments[0].value='"+val+"';";
