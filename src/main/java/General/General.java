@@ -1,9 +1,16 @@
 package General;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -19,6 +26,16 @@ public class General {
 
 	private static String downloadFilepath = System.getProperty("user.dr") + File.separator
 			+ GetConfig.getConfigValue("DownloadFilePath");
+
+private static String dataSourcePath=System.getProperty("user.dr")+"\\DataSource\\DataSource.xlsx";
+	
+	public static String getDataSourcePath() {
+	return dataSourcePath;
+}
+
+public static void setDataSourcePath(String dataSourcePath) {
+	General.dataSourcePath = dataSourcePath;
+}
 
 	/**
 	 * @author yangli
@@ -158,6 +175,68 @@ public static void cleanFolder(String path) {
 		deleteFiles(file);
 		file.mkdir();
 	}
+}
+
+/**
+ * 
+ * @param driver
+ * @param by
+ * @return
+ */
+
+public static ArrayList<List<WebElement>> getTable(WebDriver driver,By by){
+	
+	ArrayList<List<WebElement>>list =new ArrayList<List<WebElement>>();
+	
+	WebElement table=driver.findElement(by);
+	List<WebElement> rows=table.findElements(by.tagName("tr"));
+	
+	for(int i=0;i<rows.size();i++) {
+		List<WebElement> cols= rows.get(i).findElements(by.tagName("td"));
+		List<WebElement> listrow =new ArrayList<WebElement>();
+		for(int j=0;j<cols.size();j++) {
+			listrow.add(cols.get(j));
+		}
+		
+		list.add(listrow);
+	}
+	return list;
+	
+}
+
+public static void writeExcel(String excelFilePath,int sheetnum,int rownum,int colnum,String value) throws Exception  {
+	
+	//
+	
+	
+	try {
+		File src =new File(excelFilePath);
+		
+		FileInputStream fis=new FileInputStream(src);
+		
+		XSSFWorkbook wb= new XSSFWorkbook(fis);
+		
+		XSSFSheet sh=wb.getSheetAt(sheetnum);
+		
+		sh.getRow(rownum).createCell(colnum).setCellValue(value);
+		
+		FileOutputStream fout = new FileOutputStream(new File(excelFilePath));
+		
+		fout.flush();
+		
+		wb.write(fout);
+		
+		fout.close();
+		fis.close();
+			
+	}catch (Exception e){
+		
+		e.getMessage();
+		
+	}
+	
+	
+	
 }
 
 
