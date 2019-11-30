@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.By;
@@ -24,10 +26,10 @@ enum LocatorType {
 
 public class General {
 
-	private static String downloadFilepath = System.getProperty("user.dr") + File.separator
+	private static String downloadFilepath = System.getProperty("user.dir") + File.separator
 			+ GetConfig.getConfigValue("DownloadFilePath");
 
-private static String dataSourcePath=System.getProperty("user.dr")+"\\DataSource\\DataSource.xlsx";
+private static String dataSourcePath=System.getProperty("user.dir")+"\\DataSource\\DataSource.xlsx";
 	
 	public static String getDataSourcePath() {
 	return dataSourcePath;
@@ -208,31 +210,41 @@ public static void writeExcel(String excelFilePath,int sheetnum,int rownum,int c
 	
 	//
 	
-	
+	FileOutputStream fout = null;
 	try {
 		File src =new File(excelFilePath);
+		if (!src.exists()) {
+			throw new Exception("path is not exists, current path is :"+excelFilePath);
+		}
 		
-		FileInputStream fis=new FileInputStream(src);
+		//FileInputStream fis=new FileInputStream(src);
+		//第一步，创建一个workbook对应一个excel文件
+		XSSFWorkbook wb= new XSSFWorkbook();
+		//第二步，在workbook中创建一个sheet对应excel中的sheet
+		XSSFSheet sh=wb.createSheet("PlanningPage");
+		//第三步，在sheet表中添加表头第0行，老版本的poi对sheet的行列有限制
+		XSSFRow row = sh.createRow(0);
+		//第四步，创建单元格，设置表头
+		XSSFCell cell = row.createCell(0);
+		cell.setCellValue("systemCode");
 		
-		XSSFWorkbook wb= new XSSFWorkbook(fis);
+		cell = row.createCell(1);
+		cell.setCellValue("caseId");
 		
-		XSSFSheet sh=wb.getSheetAt(sheetnum);
+		//第五步，写入数据
+		XSSFRow row1 = sh.createRow(1);
+		row1.createCell(0).setCellValue(value);
 		
-		sh.getRow(rownum).createCell(colnum).setCellValue(value);
-		
-		FileOutputStream fout = new FileOutputStream(new File(excelFilePath));
-		
-		fout.flush();
-		
+		fout = new FileOutputStream(new File(excelFilePath));
 		wb.write(fout);
-		
-		fout.close();
-		fis.close();
+		fout.flush();
 			
 	}catch (Exception e){
-		
 		e.getMessage();
-		
+	}finally {
+		if (fout != null) {
+			fout.close();
+		}
 	}
 	
 	
