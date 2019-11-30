@@ -6,9 +6,8 @@ public class writeExcelDemo {
 	
 	public static void main(String[] args) throws Exception {
 		
-	//	System.out.println("hahha");
-		
-		General.writeExcel(General.getDataSourcePath(), 0, 1, 0, "test");
+		//General.writeNewExcel(General.getDataSourcePath(), 0, 1, 0, "test");
+		General.writeExcel(General.getDataSourcePath(), 0, 1, 0, "append");
 		
 	} 
 
