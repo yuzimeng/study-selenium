@@ -34,8 +34,17 @@ public class ProvinceCityCountyDataUtils {
 		}
 		return dataList;
 	}
-
+	
 	public static List<Map<String, String>> addressResolution(String address) {
+		List<Map<String, String>> table = new ArrayList<Map<String, String>>();
+		table = addressResolutionFromProvince(address);
+		if (table == null || table.isEmpty()) {
+			table = addressResolutionFromCity(address);
+		}
+		return table;
+	}
+
+	private static List<Map<String, String>> addressResolutionFromProvince(String address) {
 		/*
 		 * java.util.regex是一个用正则表达式所订制的模式来对字符串进行匹配工作的类库包。它包括两个类：Pattern和Matcher Pattern
 		 * 一个Pattern是一个正则表达式经编译后的表现模式。 Matcher
@@ -54,6 +63,27 @@ public class ProvinceCityCountyDataUtils {
 			row.put("province", province == null ? "" : province.trim());
 			city = m.group("city");
 			row.put("city", city == null ? "" : city.trim());
+			county = m.group("county");
+			row.put("county", county == null ? "" : county.trim());
+			town = m.group("town");
+			row.put("town", town == null ? "" : town.trim());
+			village = m.group("village");
+			row.put("village", village == null ? "" : village.trim());
+			table.add(row);
+		}
+		return table;
+	}
+	
+	private static List<Map<String, String>> addressResolutionFromCity(String address) {
+		String regex = "(?<province>[^市]+自治州|.*?地区|.*?行政单位|.+盟|市辖区|.*?市|.*?县)(?<county>[^县]+县|.+区|.+市|.+旗|.+海域|.+岛)?(?<town>[^区]+区|.+镇)?(?<village>.*)";
+		Matcher m = Pattern.compile(regex).matcher(address);
+		String province = null, county = null, town = null, village = null;
+		List<Map<String, String>> table = new ArrayList<Map<String, String>>();
+		Map<String, String> row = null;
+		while (m.find()) {
+			row = new LinkedHashMap<String, String>();
+			province = m.group("province");
+			row.put("province", province == null ? "" : province.trim());
 			county = m.group("county");
 			row.put("county", county == null ? "" : county.trim());
 			town = m.group("town");
