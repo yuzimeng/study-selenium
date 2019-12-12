@@ -41,6 +41,9 @@ public class ProvinceCityCountyDataUtils {
 		if (table == null || table.isEmpty()) {
 			table = addressResolutionFromCity(address);
 		}
+		if (table == null || table.isEmpty()) {
+			table = addressResolutionFromCounty(address);
+		}
 		return table;
 	}
 
@@ -75,15 +78,33 @@ public class ProvinceCityCountyDataUtils {
 	}
 	
 	private static List<Map<String, String>> addressResolutionFromCity(String address) {
-		String regex = "(?<province>[^市]+自治州|.*?地区|.*?行政单位|.+盟|市辖区|.*?市|.*?县)(?<county>[^县]+县|.+区|.+市|.+旗|.+海域|.+岛)?(?<town>[^区]+区|.+镇)?(?<village>.*)";
+		String regex = "(?<city>[^市]+自治州|.*?地区|.*?行政单位|.+盟|市辖区|.*?市)(?<county>[^县]+县|.+区|.+市|.+旗|.+海域|.+岛)?(?<town>[^区]+区|.+镇)?(?<village>.*)";
 		Matcher m = Pattern.compile(regex).matcher(address);
-		String province = null, county = null, town = null, village = null;
+		String city = null, county = null, town = null, village = null;
 		List<Map<String, String>> table = new ArrayList<Map<String, String>>();
 		Map<String, String> row = null;
 		while (m.find()) {
 			row = new LinkedHashMap<String, String>();
-			province = m.group("province");
-			row.put("province", province == null ? "" : province.trim());
+			city = m.group("city");
+			row.put("city", city == null ? "" : city.trim());
+			county = m.group("county");
+			row.put("county", county == null ? "" : county.trim());
+			town = m.group("town");
+			row.put("town", town == null ? "" : town.trim());
+			village = m.group("village");
+			row.put("village", village == null ? "" : village.trim());
+			table.add(row);
+		}
+		return table;
+	}
+	private static List<Map<String, String>> addressResolutionFromCounty(String address) {
+		String regex = "(?<county>[^县]+县|.+区|.+市|.+旗|.+海域|.+岛)?(?<town>[^区]+区|.+镇)?(?<village>.*)";
+		Matcher m = Pattern.compile(regex).matcher(address);
+		String county = null, town = null, village = null;
+		List<Map<String, String>> table = new ArrayList<Map<String, String>>();
+		Map<String, String> row = null;
+		while (m.find()) {
+			row = new LinkedHashMap<String, String>();
 			county = m.group("county");
 			row.put("county", county == null ? "" : county.trim());
 			town = m.group("town");
