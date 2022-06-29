@@ -23,7 +23,7 @@
 		<cucumber.juint.version>1.2.5</cucumber.juint.version>
 		<cucumber.extentsreport.version>3.0.2</cucumber.extentsreport.version>
 		<aventstack.extentreports.version>3.1.2</aventstack.extentreports.version>
-		<poi.version>4.1.0</poi.version>				
+		<poi.version>4.1.1</poi.version>				
 		<spring.version>5.2.1.RELEASE</spring.version>
 
 	</properties>
